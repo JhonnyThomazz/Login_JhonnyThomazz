@@ -140,9 +140,23 @@ export function useProdutos() {
         router.push('/dashboard')
     };
 
+    const DetailsProd = (p: Produto) =>{
+        Swal.fire({
+            title: p.nome,
+            text: p.descricao,
+            imageUrl: p.url,
+            imageWidth: 300,
+            imageHeight: 300,
+            showCancelButton: true,
+            showConfirmButton: false,
+            cancelButtonColor: "#e91414",
+            cancelButtonText: "Fechar"
+        })
+    };
+
     return {
         produtos, loading, listarProdutos, salvar, excluir, prepararEdicao,
         nome, setNome, descricao, setDescricao, preco, setPreco, url, setUrl,
-        editandoId, limparFormulario, buscarProdPorId
+        editandoId, limparFormulario, buscarProdPorId, DetailsProd
     };
 }

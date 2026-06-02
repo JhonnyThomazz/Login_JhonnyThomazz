@@ -13,7 +13,7 @@ export default function Dashboard() {
     const {
             produtos, loading, listarProdutos, salvar, excluir, prepararEdicao,
             nome, setNome, descricao, setDescricao, preco, setPreco, url, setUrl,
-            editandoId, limparFormulario
+            editandoId, limparFormulario, DetailsProd
         } = useProdutos();
 
         useEffect(() => {
@@ -38,7 +38,7 @@ export default function Dashboard() {
                 <h2 style={{fontSize: '1.5rem'}}>Produtos Cadastrados</h2>
                 {loading ? <p>Carregando...</p> : (
                     <div style={{ width: '100%', marginTop: '20px', borderCollapse: 'collapse', fontWeight: 'bold'}}>
-                            <div style={{ borderBottom: '2px solid #eee', display: 'grid', gridTemplateColumns: "1fr 3fr 1fr 1fr" }}>
+                            <div style={{ borderBottom: '2px solid #eee', display: 'grid', gridTemplateColumns: "1fr 3fr 1fr 1fr"}}>
                                 <div style={{padding: '10px', textAlign: 'left'}}>Produto</div>
                                 <div style={{padding: '10px', textAlign: 'left'}}>Nome</div>
                                 <div style={{padding: '10px', textAlign: 'left'}}>Preço</div>
@@ -46,9 +46,9 @@ export default function Dashboard() {
                             </div>
                         <div>
                             {produtos.map(p => (
-                                <div key={p.id} style={{ borderBottom: '1px solid #eee', display:'grid', gridTemplateColumns: "1fr 3fr 1fr 1fr"}}>
+                                <div key={p.id} style={{ borderBottom: '1px solid #eee', display:'grid', gridTemplateColumns: "1fr 3fr 1fr 1fr", alignItems: 'center'}}>
                                     <div style={{padding: '10px', textAlign: 'left'}}>
-                                        <img src={(p.url)}
+                                        <img onClick ={() => DetailsProd(p)} src={(p.url)}
                                          style={{width: "90px", height: "90px", borderRadius: "10px"}}/>
                                     </div>
                                     <div style={{ padding: '10px', textAlign: 'left' }}>{p.nome}</div>
