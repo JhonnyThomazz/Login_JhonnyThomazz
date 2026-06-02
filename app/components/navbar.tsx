@@ -56,7 +56,7 @@ export default function Navbar(){
     return(
     <nav>
         <div className="image">
-            <img src ="../v1Ultrakill.jpg"/>
+            <img src ="/v1Ultrakill.jpg"/>
         </div>
 
         <div className="details">

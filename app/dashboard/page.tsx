@@ -16,13 +16,6 @@ export default function Dashboard() {
             editandoId, limparFormulario
         } = useProdutos();
 
-         useEffect(() => {
-        if (produtos) {
-            buscarProdPorId(produtos);
-        }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [produtos]);
-
         useEffect(() => {
             listarProdutos();
         }, [listarProdutos]);
@@ -52,20 +45,20 @@ export default function Dashboard() {
                                 <div style={{padding: '10px', textAlign: 'center'}}>Ações</div>
                             </div>
                         <div>
-                            {produtos.map(produto => (
-                                <div key={produto.id} style={{ borderBottom: '1px solid #eee', display:'grid', gridTemplateColumns: "1fr 3fr 1fr 1fr"}}>
+                            {produtos.map(p => (
+                                <div key={p.id} style={{ borderBottom: '1px solid #eee', display:'grid', gridTemplateColumns: "1fr 3fr 1fr 1fr"}}>
                                     <div style={{padding: '10px', textAlign: 'left'}}>
-                                        <img src={(produto.url)}
+                                        <img src={(p.url)}
                                          style={{width: "90px", height: "90px", borderRadius: "10px"}}/>
                                     </div>
-                                    <div style={{ padding: '10px', textAlign: 'left' }}>{produto.nome}</div>
-                                    <div style={{ padding: '10px', textAlign:'left' }}>R$ {(Number(produto.preco) || 0).toFixed(2)}</div>
+                                    <div style={{ padding: '10px', textAlign: 'left' }}>{p.nome}</div>
+                                    <div style={{ padding: '10px', textAlign:'left' }}>R$ {(Number(p.preco) || 0).toFixed(2)}</div>
                                     <div style={{ padding: '10px', textAlign: 'center' }}>
-                                        <button onClick={() => router.push(`/dashboard/produtos/${produto.id}`)} 
+                                        <button onClick={() => router.push(`/dashboard/produto/${p.id}`)} 
                                                 style={{ marginRight: '10px', color: '#007bff', background: 'none', border: 'none', cursor: 'pointer' }}>
                                             Editar
                                         </button>
-                                        <button onClick={() => excluir(produto.id!)} 
+                                        <button onClick={() => excluir(p.id!)} 
                                                 style={{ color: 'red', background: 'none', border: 'none', cursor: 'pointer' }}>
                                             Excluir
                                         </button>
@@ -78,8 +71,4 @@ export default function Dashboard() {
             </div>
         </div>
     );
-}
-
-function buscarProdPorId(produtos: Produto[]) {
-    throw new Error("Function not implemented.");
 }

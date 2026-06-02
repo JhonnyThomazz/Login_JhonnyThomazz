@@ -2,24 +2,24 @@
 
 import { useEffect } from 'react';
 import { useProdutos } from '../hooks/useProd';
-import '../../formStyle.css';
-import NavBar from '@/app/components/navbar';
+import '../formStyle.css';
 
-export default function ProdutoForm() {
+export default function ProdutoForm( {produtoId }: { produtoId?: number }) {
     const {
-        produtos, loading, listarProdutos, salvar, excluir, prepararEdicao,
+        salvar, buscarProdPorId,
         nome, setNome, descricao, setDescricao, preco, setPreco, url, setUrl,
         editandoId, limparFormulario
     } = useProdutos();
 
     useEffect(() => {
-        listarProdutos();
-    }, [listarProdutos]);
+            if (produtoId) {
+                buscarProdPorId(produtoId);
+            }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [produtoId]);
 
     return (
         <>
-        <NavBar />
-
         <div className="login-container" style={{ padding: '20px', minHeight: '100vh' }}>
             
             <div className="login-card" style={{ width: '100%', maxWidth: '500px', marginBottom: '30px' }}>
@@ -58,3 +58,4 @@ export default function ProdutoForm() {
         </>
     );
 }
+

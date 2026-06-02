@@ -35,8 +35,9 @@ export function useProdutos() {
         } finally {
             setLoading(false);
         }
-    }, []);
-    // GETBYID
+    },[]);
+
+    //GetById
     const buscarProdPorId = async (id: number) => {
         try{
             const resposta = await api.get(`/produtos/${id}`);
@@ -50,7 +51,7 @@ export function useProdutos() {
                 showConfirmButton: true,
                 confirmButtonColor: "rgb(212, 11, 11)"
             })
-            router.push('/dashboard/produtos');
+            router.push('/dashboard/produto');
         }
     };
 
@@ -86,22 +87,42 @@ export function useProdutos() {
     };
 
     // DELETE
-    const excluir = async (id: number) => {
-        if (!confirm("Excluir este produto?")) return;
-        try {
-            await api.delete(`/produtos/${id}`);
-            listarProdutos();
-        } catch (error) {
-            Swal.fire({
-                title: "Oops...!",
-                text: "Erro ao excluir o produto!",
-                icon: "error",
-                showConfirmButton: true,
-                confirmButtonColor: "rgb(212, 11, 11)"
-            });
-        }
-    };
+       const excluir = async (id: number) => {
+        Swal.fire({
+          title: "Excluir produto?",
+          text: "Essa ação não poderá ser desfeita",
+          icon: "question",
+          iconColor: "rgb(212, 11, 11)",
+          showConfirmButton: true,
+          showCancelButton: true,
+          confirmButtonText: "Excluir",
+          cancelButtonText: "Cancelar",
+          confirmButtonColor: "#e91414",
+          cancelButtonColor: "#848484",
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                try {
+                    await api.delete(`/produtos/${id}`);
+                    listarProdutos();
 
+                    Swal.fire({
+                        title: "Produto excluído",
+                        text: "Produto excluído com sucesso!",
+                        icon: "success",
+                        timer: 1500,
+                        showConfirmButton: false,
+                    });
+                } catch (error) {
+                    Swal.fire({
+                        title: "Oops...!",
+                        text: "Erro ao excluir o produto",
+                        icon: "error",
+                        confirmButtonColor: "#e91414",
+                    });
+                }
+            }
+        });
+    };
     const prepararEdicao = (p: Produto) => {
         setEditandoId(p.id!);
         setNome(p.nome);
@@ -116,11 +137,12 @@ export function useProdutos() {
         setDescricao('');
         setPreco('');
         setUrl('');
+        router.push('/dashboard')
     };
 
     return {
         produtos, loading, listarProdutos, salvar, excluir, prepararEdicao,
         nome, setNome, descricao, setDescricao, preco, setPreco, url, setUrl,
-        editandoId, limparFormulario
+        editandoId, limparFormulario, buscarProdPorId
     };
 }
