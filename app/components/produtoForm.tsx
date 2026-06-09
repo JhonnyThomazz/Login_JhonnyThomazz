@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
-import { useProdutos } from '../hooks/useProd';
+import { useProd } from '../hooks/useProd';
 import '../formStyle.css';
 
 export default function ProdutoForm( {produtoId }: { produtoId?: number }) {
@@ -9,7 +9,7 @@ export default function ProdutoForm( {produtoId }: { produtoId?: number }) {
         salvar, buscarProdPorId,
         nome, setNome, descricao, setDescricao, preco, setPreco, url, setUrl,
         editandoId, limparFormulario
-    } = useProdutos();
+    } = useProd();
 
     useEffect(() => {
             if (produtoId) {

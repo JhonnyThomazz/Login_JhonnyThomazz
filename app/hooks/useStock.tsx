@@ -1,66 +1,60 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState } from 'react';
 import api from '../lib/api';
-import { Produto } from '../types/produtos';
+import { Estoque } from '../types/Estoque';
 import { useRouter } from 'next/navigation';
 import Swal from 'sweetalert2';
 
-export function useStock() {
-    const [produtos, setProdutos] = useState<Produto[]>([]);
+export function useStock(){
     const [loading, setLoading] = useState(false);
     const router = useRouter();
 
-    // Estados para o formulário (seguindo seu padrão de states separados)
-    const [nome, setNome] = useState('');
-    const [descricao, setDescricao] = useState('');
-    const [preco, setPreco] = useState('');
-    const [url, setUrl] = useState('');
+    const [localizacao, setLocalizacao] = useState('');
+    const [quantidade, setQuantidade] = useState('');
+    const [idProduto, setIdProduto] = useState('');
     const [editandoId, setEditandoId] = useState<number | null>(null);
 
-    // GET - Listar
-    const listarProdutos = useCallback(async () => {
+    const buscarEstoquePorId = async (id: number) => {
         setLoading(true);
         try {
-            const resposta = await api.get('/produtos/');
-            setProdutos(resposta.data);
+            const resposta = await api.get(`/estoque/${id}`);
+            if (resposta.data) prepararEdicao(resposta.data);
         } catch (error) {
-            Swal.fire({
-                title: "Oops...!",
-                text: "Erro ao atualizar o estoque!",
-                icon: "error",
-                showConfirmButton: true,
-                confirmButtonColor: "rgb(212, 11, 11)"
-            });
+            alert("Erro ao buscar os dados do estoque.");
         } finally {
             setLoading(false);
         }
-    }, []);
+    };
 
-    // POST / PUT - Salvar
     const salvar = async (e: React.FormEvent) => {
         e.preventDefault();
-        const dados: Produto = { nome, descricao, preco: Number(preco), url };
+        const dados = {
+            localizacao,
+            quantidade: Number(quantidade),
+            produtos: { 
+                id: Number(idProduto) 
+            } // Vinculando ao produto via Jackson WRITE_ONLY
+        };
 
         try {
             if (editandoId) {
-                await api.put(`/produtos/${editandoId}`, dados);
+                await api.put(`/estoque/${editandoId}`, dados);
             } else {
-                await api.post('/produtos/', dados);
+                await api.post('/estoque/', dados);
             }
             limparFormulario();
             Swal.fire({
-                title: "sucesso!",
-                text: "Estoque atualizado com sucesso.",
+                title: "Tudo certo!",
+                text: "Produto adicionado ao estoque.",
                 icon: "success",
-                showConfirmButton: true,
-                confirmButtonColor: "rgb(11, 212, 34)"
-            });
+                timer: 1500
+            })
             router.push('/dashboard');
         } catch (error) {
             Swal.fire({
                 title: "Oops...!",
-                text: "Erro ao adicionar ao estoque!",
+                text: "Erro ao adicionar o produto ao estoque!",
                 icon: "error",
                 showConfirmButton: true,
                 confirmButtonColor: "rgb(212, 11, 11)"
@@ -68,42 +62,26 @@ export function useStock() {
         }
     };
 
-    // DELETE
-    const excluir = async (id: number) => {
-        if (!confirm("Excluir este produto?")) return;
-        try {
-            await api.delete(`/produtos/${id}`);
-            listarProdutos();
-        } catch (error) {
-            Swal.fire({
-                title: "Oops...!",
-                text: "Erro ao excluir o produto!",
-                icon: "error",
-                showConfirmButton: true,
-                confirmButtonColor: "rgb(212, 11, 11)"
-            });
-        }
-    };
-
-    const prepararEdicao = (p: Produto) => {
-        setEditandoId(p.id!);
-        setNome(p.nome);
-        setDescricao(p.descricao);
-        setPreco(p.preco.toString());
-        setUrl(p.url);
+    const prepararEdicao = (e: Estoque) => {
+        setEditandoId(e.id!);
+        setLocalizacao(e.localizacao);
+        setQuantidade(e.quantidade.toString());
+        // Trata a leitura do ID dependendo do retorno da API
+        const prodId = e.produtos ? e.produtos.id : (e as any).id_produto;
+        setIdProduto(prodId ? prodId.toString() : '');
     };
 
     const limparFormulario = () => {
         setEditandoId(null);
-        setNome('');
-        setDescricao('');
-        setPreco('');
-        setUrl('');
+        setLocalizacao('');
+        setQuantidade('');
+        setIdProduto('');
+        router.push('/dashboard')
     };
 
     return {
-        produtos, loading, listarProdutos, salvar, excluir, prepararEdicao,
-        nome, setNome, descricao, setDescricao, preco, setPreco, url, setUrl,
-        editandoId, limparFormulario
+        loading, salvar, buscarEstoquePorId,
+        localizacao, setLocalizacao, quantidade, setQuantidade, idProduto, setIdProduto,
+        editandoId, limparFormulario, 
     };
 }

@@ -6,7 +6,7 @@ import { Produto } from '../types/produtos';
 import { useRouter } from 'next/navigation';
 import Swal from 'sweetalert2';
 
-export function useProdutos() {
+export function useProd() {
     const [produtos, setProdutos] = useState<Produto[]>([]);
     const [loading, setLoading] = useState(false);
     const router = useRouter();
@@ -143,7 +143,7 @@ export function useProdutos() {
     const DetailsProd = (p: Produto) =>{
         Swal.fire({
             title: p.nome,
-            text: p.descricao,
+            html: `Descrição: ${p.descricao} <br> Local: ${p.estoque?.localizacao}`,
             imageUrl: p.url,
             imageWidth: 300,
             imageHeight: 300,
