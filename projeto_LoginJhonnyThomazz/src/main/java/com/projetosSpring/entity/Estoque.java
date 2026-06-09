@@ -1,11 +1,11 @@
 package com.projetosSpring.entity;
 
-
-import jakarta.persistence.CascadeType;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
@@ -18,26 +18,22 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "produtos")
-public class Produtos {
+@Table(name = "Estoque")
+public class Estoque {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	@NotBlank(message = "Insira uma descrição para o produto!")
-	private String descricao;
+	@NotBlank
+	private String localizacao;
 	
-	@NotBlank(message = "Insira o nome do produto!")
-	private String nome;
+	@NotNull
+	private int quantidade;
 	
-	@NotNull(message = "Informe o preço do produto!")
-	private Double preco;
-	
-	@NotBlank(message = "Insira a URL do produto!")
-	private String url;
-	
-	@OneToOne(mappedBy = "produtos", cascade = CascadeType.ALL)
-	private Estoque estoque;
+	@OneToOne
+	@JoinColumn(name = "id_produto", nullable = false)
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+	private Produtos produtos;
 	
 }
