@@ -143,7 +143,7 @@ export function useProd() {
     const DetailsProd = (p: Produto) =>{
         Swal.fire({
             title: p.nome,
-            html: `Descrição: ${p.descricao} <br> Local: ${p.estoque?.localizacao}`,
+            html: `Descrição: ${p.descricao} <br> Local: ${p.estoque?.localizacao || "Ainda sem estoque!"}`,
             imageUrl: p.url,
             imageWidth: 300,
             imageHeight: 300,

@@ -6,6 +6,7 @@ import { useProd } from "../hooks/useProd";
 import NavBar from "../components/navbar";
 import "../dashboard/dashboard.css"
 import { Produto } from "../types/produtos";
+import Swal from "sweetalert2";
 
 export default function Dashboard() {
     const router = useRouter();
@@ -31,6 +32,48 @@ export default function Dashboard() {
         }
     }, [router]);
 
+    //Função para logout depois de inatividade
+    const loginTimeout = () =>{
+        Cookies.remove("logged");
+        Cookies.remove("username");
+        router.push("/");
+        router.refresh();
+        Swal.fire({
+            icon: "info",
+            title: 'Aviso!',
+            text: 'Você ficou muito tempo inativo...Faça login novamente!',
+            showConfirmButton: false,
+            timer: 2500
+        })
+    }
+
+    useEffect(() => {
+        let timerLogout: NodeJS.Timeout;
+        const timeTimeout = 600;
+        
+        const ResetTimer = () =>{
+            if (timerLogout) clearTimeout(timerLogout)
+
+            timerLogout = setTimeout(() => {
+            loginTimeout();
+        }, timeTimeout * 1000); 
+        };
+
+        ResetTimer();
+
+        window.addEventListener("mousemove", ResetTimer);
+        window.addEventListener("click", ResetTimer);
+        window.addEventListener("keydown", ResetTimer);
+
+        return() => {
+            if (timerLogout) clearTimeout(timerLogout);
+
+            window.removeEventListener("mousemove", ResetTimer);
+            window.removeEventListener("click", ResetTimer);
+            window.removeEventListener("keydown", ResetTimer);
+        };
+    }, [router]);
+    
     return (
         <div>
             <NavBar />  
@@ -42,7 +85,7 @@ export default function Dashboard() {
                                 <div style={{padding: '10px', textAlign: 'left'}}>Produto</div>
                                 <div style={{padding: '10px', textAlign: 'left'}}>Nome</div>
                                 <div style={{padding: '10px', textAlign: 'left'}}>Preço</div>
-                                <div style={{padding: '10px', textAlign: 'center'}}>Estoque</div>
+                                <div style={{padding: '10px', textAlign: 'center'}}>Estoque</div>   
                                 <div style={{padding: '10px', textAlign: 'center'}}>Ações</div>
                             </div>
                         <div>
@@ -55,7 +98,19 @@ export default function Dashboard() {
                                     <div style={{ padding: '10px', textAlign: 'left' }}>{p.nome}</div>
                                     <div style={{ padding: '10px', textAlign:'left' }}>R$ {(Number(p.preco) || 0).toFixed(2)}</div>
                                     <div style={{ padding: '10px', textAlign: 'left' }}>
-                                    <div style={{ padding: '10px', textAlign: 'center' }}>{p.estoque ? p.estoque.quantidade : 0} Unid.</div>    
+                                    <div style={{ padding: '10px', textAlign: 'center', 
+                                        color: 
+                                        !p.estoque||p.estoque.quantidade === 0 
+                                        ? "#e90000" 
+                                        : p.estoque.quantidade <= 10 
+                                        ? "#f3d52b" 
+                                        : "#10b116" 
+                                        }}
+                                    >
+                                        {!p.estoque || p.estoque.quantidade === 0 
+                                        ? "Sem estoque!" 
+                                        : `${p.estoque.quantidade} unid.`}
+                                    </div>    
                                     </div>
                                     <div style={{ padding: '10px', textAlign: 'center' }}>
                                         <button onClick={() => {

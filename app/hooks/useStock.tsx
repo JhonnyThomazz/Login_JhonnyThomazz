@@ -14,6 +14,7 @@ export function useStock(){
     const [quantidade, setQuantidade] = useState('');
     const [idProduto, setIdProduto] = useState('');
     const [editandoId, setEditandoId] = useState<number | null>(null);
+    const [nome, setNome] = useState('');
 
     const buscarEstoquePorId = async (id: number) => {
         setLoading(true);
@@ -43,6 +44,25 @@ export function useStock(){
             } else {
                 await api.post('/estoque/', dados);
             }
+            if(Number(quantidade) === 0){
+                await Swal.fire({
+                    icon: "warning",
+                    title: "Epa!",
+                    text: "Há produtos sem estoque!",
+                    showConfirmButton: false,
+                    timer: 2000
+                })
+            }
+            else if(Number(quantidade) <= 10 ){
+                 await Swal.fire({
+                    icon: "warning",
+                    title: "Epa!",
+                    text: "Há produtos com estoque baixo!",
+                    showConfirmButton: false,
+                    timer: 2000
+                })
+            } 
+            else{
             limparFormulario();
             Swal.fire({
                 title: "Tudo certo!",
@@ -50,6 +70,9 @@ export function useStock(){
                 icon: "success",
                 timer: 1500
             })
+            }
+
+            
             router.push('/dashboard');
         } catch (error) {
             Swal.fire({
