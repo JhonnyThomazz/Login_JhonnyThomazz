@@ -1,0 +1,15 @@
+com\projetosSpring\config\CorsConfig.class
+com\projetosSpring\service\EstoqueService.class
+com\projetosSpring\controller\ProdutosController.class
+com\projetosSpring\repository\ProdutosRepository.class
+com\projetosSpring\service\LoginService.class
+com\projetosSpring\entity\Produtos.class
+com\projetosSpring\entity\Estoque.class
+com\projetosSpring\service\ProdutosService.class
+com\projetosSpring\repository\EstoqueRepository.class
+com\projetosSpring\controller\EstoqueController.class
+com\projetosSpring\config\CorsConfig$1.class
+com\projetosSpring\controller\LoginController.class
+com\projetosSpring\entity\Login.class
+com\projetosSpring\repository\LoginRepository.class
+com\projetosSpring\ProjetoLoginJhonnyThomazzApplication.class
